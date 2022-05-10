@@ -24,6 +24,13 @@ public class Window {
     private boolean resized;
 
     private boolean vSync;
+    
+    private GLFWVidMode mode;
+    
+    private long monitor;
+    
+    private int backWidth;
+    private int backHeight;
 
     public Window(String title, int width, int height, boolean vSync) {
         this.title = title;
@@ -38,11 +45,16 @@ public class Window {
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
         
+        
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
         if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
+        
+       monitor = glfwGetPrimaryMonitor();
+        
+        mode = glfwGetVideoMode(monitor);
             
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE); // the window will stay hidden after creation
@@ -61,6 +73,8 @@ public class Window {
 
         // Setup resize callback
         glfwSetFramebufferSizeCallback(windowHandle, (window, width, height) -> {
+        	this.backHeight = this.height;
+        	this.backWidth = this.width;
             this.width = width;
             this.height = height;
             this.setResized(true);
@@ -70,6 +84,8 @@ public class Window {
         glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                 glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
+            } else if (key == GLFW_KEY_F && action == GLFW_RELEASE) {
+            	glfwSetWindowMonitor(window, monitor, 0,0, mode.width(), mode.height(), mode.refreshRate());
             }
         });
 

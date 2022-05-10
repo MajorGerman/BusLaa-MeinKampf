@@ -3,6 +3,7 @@
   <groupId>buslaa</groupId>
   <artifactId>meinkampf</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
   <properties>
 	<lwjgl.version>3.3.1</lwjgl.version>
 	<joml.version>1.10.4</joml.version>
@@ -129,34 +130,23 @@
 		<artifactId>joml</artifactId>
 		<version>${joml.version}</version>
 	</dependency>
-	<dependency>
-        <groupId>buslaa</groupId>
-        <artifactId>meinkampf</artifactId>
-        <version>1.0</version>
-        <type>jar</type>
-        <classifier>jar-with-dependencies</classifier>
-    </dependency>
 </dependencies>
 
 <build>
-  <plugins>
-	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-dependency-plugin</artifactId>
-	  <executions>
-	    <execution>
-	      <id>copy-dependencies</id>
-	      <phase>prepare-package</phase>
-	      <goals>
-	        <goal>copy-dependencies</goal>
-	      </goals>
-	      <configuration>
-	        <outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
-	      </configuration>
-	    </execution>
-	  </executions>
-	</plugin>
-  </plugins>
-</build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>buslaa.meinkampf.Main</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

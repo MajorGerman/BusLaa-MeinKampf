@@ -211,7 +211,11 @@ public class MeinKampf implements IGameLogic {
             scaleInc = -1;
         } else if (window.isKeyPressed(GLFW_KEY_X)) {
             scaleInc = 1;
-        }
+        } else if (window.isKeyPressed(GLFW_KEY_C)) {
+            Renderer.setFOV(Renderer.getFOV() + (float) Math.toRadians(5.0f));
+        } else if (window.isKeyPressed(GLFW_KEY_V)) {
+        	Renderer.setFOV(Renderer.getFOV() - (float) Math.toRadians(5.0f));
+        } 
         
         if (window.getMouseState(GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
         	//direction[2] = -1;

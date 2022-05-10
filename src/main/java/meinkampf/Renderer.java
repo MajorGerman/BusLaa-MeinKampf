@@ -20,7 +20,7 @@ import org.joml.Matrix4f;
 
 public class Renderer {
 	
-    private static final float FOV = (float) Math.toRadians(60.0f);
+    private static float FOV = (float) Math.toRadians(160.0f);
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 1000.f;
     private Matrix4f projectionMatrix;
@@ -60,7 +60,10 @@ public class Renderer {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
-
+        
+        float aspectRatio = (float) window.getWidth() / window.getHeight();
+        projectionMatrix = new Matrix4f().setPerspective(Renderer.FOV, aspectRatio, Renderer.Z_NEAR, Renderer.Z_FAR);
+        
         shaderProgram.bind();
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
         shaderProgram.setUniform("texture_sampler", 0);
@@ -75,6 +78,13 @@ public class Renderer {
         }
 
         shaderProgram.unbind();
+    }
+    
+    public static float getFOV() {
+    	return FOV;
+    }
+    public static  void setFOV(float FOVnew) {
+    	FOV = FOVnew;
     }
 
     public void cleanup() {
