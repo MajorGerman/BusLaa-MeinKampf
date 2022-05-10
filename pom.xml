@@ -9,6 +9,7 @@
 	<lwjgl.natives>natives-windows</lwjgl.natives>
 	<maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <pngdecoder.version>1.0</pngdecoder.version>
 </properties>
 
 <dependencyManagement>
@@ -24,6 +25,11 @@
 </dependencyManagement>
 
 <dependencies>
+	<dependency>
+	    <groupId>org.l33tlabs.twl</groupId>
+	    <artifactId>pngdecoder</artifactId>
+	    <version>${pngdecoder.version}</version>
+	</dependency>
 	<dependency>
 		<groupId>org.lwjgl</groupId>
 		<artifactId>lwjgl</artifactId>
@@ -123,5 +129,34 @@
 		<artifactId>joml</artifactId>
 		<version>${joml.version}</version>
 	</dependency>
+	<dependency>
+        <groupId>buslaa</groupId>
+        <artifactId>meinkampf</artifactId>
+        <version>1.0</version>
+        <type>jar</type>
+        <classifier>jar-with-dependencies</classifier>
+    </dependency>
 </dependencies>
+
+<build>
+  <plugins>
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-dependency-plugin</artifactId>
+	  <executions>
+	    <execution>
+	      <id>copy-dependencies</id>
+	      <phase>prepare-package</phase>
+	      <goals>
+	        <goal>copy-dependencies</goal>
+	      </goals>
+	      <configuration>
+	        <outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
+	      </configuration>
+	    </execution>
+	  </executions>
+	</plugin>
+  </plugins>
+</build>
+
 </project>
