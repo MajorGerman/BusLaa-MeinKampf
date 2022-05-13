@@ -5,11 +5,14 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glViewport;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import engine.GameItem;
 import engine.IGameLogic;
+import engine.MouseInput;
 import engine.Window;
+import engine.graph.Camera;
 import engine.graph.Mesh;
 import engine.graph.Texture;
 
@@ -17,7 +20,18 @@ public class MeinKampf implements IGameLogic {
 
     private int[] direction = {0, 0, 0};
     private float[] color = {0.0f,0.0f,0.0f};
+    
+    private static final float MOUSE_SENSITIVITY = 0.2f;
+    
+    
+    private static final float CAMERA_POS_STEP = 0.05f;
+    
+    
     private final Renderer renderer;
+    
+    private final Vector3f cameraInc;
+    
+    private final Camera camera;
 
     private Mesh mesh;
     private Mesh mesh2;
@@ -31,6 +45,8 @@ public class MeinKampf implements IGameLogic {
     
     public MeinKampf() {
         renderer = new Renderer();
+        camera = new Camera();
+        cameraInc = new Vector3f();
     }
     
     @Override
@@ -190,49 +206,38 @@ public class MeinKampf implements IGameLogic {
      }
     
     @Override
-    public void input(Window window) {
-        displyInc = 0;
-        displxInc = 0;
-        displzInc = 0;
-        scaleInc = 0;
-        if (window.isKeyPressed(GLFW_KEY_UP)) {
-            displyInc = 1;
-        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-            displyInc = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_LEFT)) {
-            displxInc = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
-            displxInc = 1;
-        } else if (window.isKeyPressed(GLFW_KEY_A)) {
-            displzInc = -1;
-        } else if (window.isKeyPressed(GLFW_KEY_Q)) {
-            displzInc = 1;
-        } else if (window.isKeyPressed(GLFW_KEY_Z)) {
-            scaleInc = -1;
+    public void input(Window window, MouseInput mouseInput) {
+    	cameraInc.set(0, 0, 0);
+        if (window.isKeyPressed(GLFW_KEY_W)) {
+            cameraInc.z = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_S)) {
+            cameraInc.z = 1;
+        }
+        if (window.isKeyPressed(GLFW_KEY_A)) {
+            cameraInc.x = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_D)) {
+            cameraInc.x = 1;
+        }
+        if (window.isKeyPressed(GLFW_KEY_Z)) {
+            cameraInc.y = -1;
         } else if (window.isKeyPressed(GLFW_KEY_X)) {
-            scaleInc = 1;
-        } else if (window.isKeyPressed(GLFW_KEY_C)) {
-            Renderer.setFOV(Renderer.getFOV() + (float) Math.toRadians(5.0f));
-        } else if (window.isKeyPressed(GLFW_KEY_V)) {
-        	Renderer.setFOV(Renderer.getFOV() - (float) Math.toRadians(5.0f));
-        } 
-        
-        if (window.getMouseState(GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-        	//direction[2] = -1;
-        	scaleInc = -1;
-        } else if (window.getMouseState(GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        	//direction[2] = 1;
-        	scaleInc = 1;
-        } else if (window.getMouseState(GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
-        	direction[2] = 0;
-        } else if (window.getMouseState(GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) {
-        	direction[2] = 0;
+            cameraInc.y = 1;
         }
     }
 
     @Override
-    public void update(float interval) {
+    public void update(float interval, MouseInput mouseInput) {
     	
+    	camera.movePosition(cameraInc.x * CAMERA_POS_STEP,
+    	        cameraInc.y * CAMERA_POS_STEP,
+    	        cameraInc.z * CAMERA_POS_STEP);
+
+    	    // Update camera based on mouse            
+    	    if (mouseInput.isRightButtonPressed()) {
+    	        Vector2f rotVec = mouseInput.getDisplVec();
+    	        camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
+    	    }
+    	    
     	for (GameItem gameItem : gameItems) {
             // Update position
             Vector3f itemPos = gameItem.getPosition();
@@ -271,7 +276,7 @@ public class MeinKampf implements IGameLogic {
     public void render(Window window) {
 
         window.setClearColor(color[0], color[1], color[2], 0.0f);
-        renderer.render(window, gameItems);
+        renderer.render(window, camera ,gameItems);
         
     }
     
