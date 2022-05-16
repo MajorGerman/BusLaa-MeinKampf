@@ -24,7 +24,7 @@ import org.joml.Matrix4f;
 
 public class Renderer {
 	
-    private static float FOV = (float) Math.toRadians(160.0f);
+    private static float FOV = (float) Math.toRadians(80.0f);
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 1000.f;
     private Matrix4f projectionMatrix;

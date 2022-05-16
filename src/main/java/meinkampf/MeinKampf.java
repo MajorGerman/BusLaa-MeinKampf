@@ -55,7 +55,7 @@ public class MeinKampf implements IGameLogic {
     	
     	renderer.init(window);
     	
-    	Mesh mesh = OBJLoader.loadMesh("/models/block.obj");
+    	Mesh mesh = OBJLoader.loadMesh("/models/model.obj");
     	
        Texture texture = new Texture("textures/Busel.png");
              
